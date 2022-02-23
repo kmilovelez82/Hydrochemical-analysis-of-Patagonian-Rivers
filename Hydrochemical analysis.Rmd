@@ -1,0 +1,562 @@
+---
+title: "Hydrochemical analysis of mid-low sections from North Patagonia Rivers, Argentina (2014-2015)"
+author: "Vélez-Agudelo Camilo"
+date: "18/2/2021"
+output:
+ html_document:
+     toc: TRUE
+     toc_float: TRUE
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(eval = TRUE, echo = TRUE, message = FALSE, warning = FALSE)
+library(tidyverse)
+library(ggplot2)
+library(ggpubr)
+library(kableExtra)
+library(gridExtra)
+library(rstatix)
+```
+
+# **Exploratory Data Analysis** #
+
+## Complete Data ##
+
+These data base include measurements of summer and winter, as well as the coastal and continental sites
+
+```{r }
+varam <- readRDS("data.rds") ##original data##
+
+varam.summer <- varam %>% 
+    filter(Season == "summer") ##summer data##
+
+varam.winter <- varam %>% 
+    filter(Season == "winter")##winter data##
+    
+```
+
+
+```{r echo = FALSE}
+varam %>% 
+    kable(caption = "Hidrochemical data (summer and winter) from Northen Patagonia River") %>%
+    kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
+                  font_size = 11,
+                  position = "center",
+                  full_width = T) %>%
+    scroll_box(height = "300px", width = "900px")
+```
+
+
+```{r echo = FALSE}
+summary.sta <- pastecs::stat.desc(
+    varam[,c(4:19)], 
+    )
+
+summary.sta <- round(
+    summary.sta, 2
+    )
+
+summary.sta %>% 
+    kable(caption = "Statistical summary of physical and chemical variables (complete data)",
+          align = "cccccccccccccccc") %>% 
+    kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
+                  font_size = 11,
+                  position = "center",
+                  full_width = T) %>%
+    scroll_box(height = "300px", width = "900px")
+
+```
+
+### Bean Plot - Complete Data ###
+
+Beanplots of physical and hydrochemical variables measured in the Colorado, Negro and Chubut Rivers. The dotted line is the overall mean for each variables while the solid line indicates the mean value in each season.
+
+```{r echo = FALSE, fig.width = 10, fig.height = 6}
+
+library(beanplot)
+
+par(
+    mar=c(2,2,2,2), 
+    mfcol=c(3,5)
+    )
+
+beanplot(
+    Temperature ~ Season*River,
+    data = varam,
+    bw = "nrd0",
+    ll = 0.1,
+    col = list("deepskyblue3",c("darkorange2","black")),
+    horizontal=F,
+    main="Temperature",
+    log="",
+    side="both",
+    beanlines="mean",
+    show.names=T,
+    innerborder=NA
+    )
+
+beanplot(
+    Conductivity ~ Season*River,
+    data=varam,
+    bw="nrd0",
+    ll=0.1,
+    col=list("deepskyblue3",c("darkorange2","black")),
+    horizontal=F,
+    main="Conductivity",
+    log="",
+    side="both",
+    beanlines="mean",
+    show.names=T,
+    innerborder=NA
+    )
+
+beanplot(
+    pH ~ Season*River,
+    data=varam,
+    bw="nrd0",
+    ll=0.1,
+    col=list("deepskyblue3",c("darkorange2","black")),
+    horizontal=F,
+    main="pH",
+    log="",
+    side="both",
+    beanlines="mean",
+    show.names=T,
+    innerborder=NA
+    )
+
+beanplot(
+    Salinity ~ Season*River,
+    data=varam,
+    bw="nrd0",
+    ll=0.1,
+    col=list("deepskyblue3",c("darkorange2","black")),
+    horizontal=F,
+    main="Salinity",
+    log="",
+    side="both",
+    beanlines="mean",
+    show.names=T,
+    innerborder=NA
+    )
+
+beanplot(
+    HCO3 ~ Season*River,
+    data=varam,
+    bw="nrd0",
+    ll=0.1,
+    col=list("deepskyblue3",c("darkorange2","black")),
+    horizontal=F,
+    main="Bicarbonates",
+    log="",
+    side="both",
+    beanlines="mean",
+    show.names=T,
+    innerborder=NA
+    )
+
+beanplot(
+    Cl ~ Season*River,
+    data=varam,
+    bw="nrd0",
+    ll=0.1,
+    col=list("deepskyblue3",c("darkorange2","black")),
+    horizontal=F,
+    main="Chloride",
+    log="",
+    side="both",
+    beanlines="mean",
+    show.names=T,
+    innerborder=NA
+    )
+
+beanplot(
+    Hardness ~ Season*River,
+    data=varam,
+    bw="nrd0",
+    ll=0.1,
+    col=list("deepskyblue3",c("darkorange2","black")),
+    horizontal=F,
+    main="Hardness",
+    log="",
+    side="both",
+    beanlines="mean",
+    show.names=T,
+    innerborder=NA
+    )
+
+beanplot(
+    Ca ~ Season*River,
+    data=varam,
+    bw="nrd0",
+    ll=0.1,
+    col=list("deepskyblue3",c("darkorange2","black")),
+    horizontal=F,
+    main="Calcium",
+    log="",
+    side="both",
+    beanlines="mean",
+    show.names=T,
+    innerborder=NA
+    )
+
+beanplot(
+    Mg ~ Season*River,
+    data=varam,
+    bw="nrd0",
+    ll=0.1,
+    col=list("deepskyblue3",c("darkorange2","black")),
+    horizontal=F,
+    main="Magnesium",
+    log="",
+    side="both",
+    beanlines="mean",
+    show.names=T,
+    innerborder=NA
+    )
+
+beanplot(
+    SO4 ~ Season*River,
+    data=varam,
+    bw="nrd0",
+    ll=0.1,
+    col=list("deepskyblue3",c("darkorange2","black")),
+    horizontal=F,
+    main="Sulphate",
+    log="",
+    side="both",
+    beanlines="mean",
+    show.names=T,
+    innerborder=NA
+    )
+
+beanplot(
+    Na ~ Season*River,
+    data=varam,
+    bw="nrd0",
+    ll=0.1,
+    col=list("deepskyblue3",c("darkorange2","black")),
+    horizontal=F,
+    main="Sodium",
+    log="",
+    side="both",
+    beanlines="mean",
+    show.names=T,
+    innerborder=NA
+    )
+
+beanplot(
+    K ~ Season*River,
+    data=varam,
+    bw="nrd0",
+    ll=0.1,
+    col=list("deepskyblue3",c("darkorange2","black")),
+    horizontal=F,
+    main="Potassium",
+    log="",
+    side="both",
+    beanlines="mean",
+    show.names=T,
+    innerborder=NA
+    )
+legend(
+    "right",
+    fill=c("deepskyblue3","darkorange2"),
+    legend=c("Winter","Summer"),
+    bty="n",
+    ncol=1
+    )
+
+beanplot(
+    SiO2 ~ Season*River,
+    data=varam,
+    bw="nrd0",
+    ll=0.1,
+    col=list("deepskyblue3",c("darkorange2","black")),
+    horizontal=F,
+    main="Silica",
+    log="",
+    side="both",
+    beanlines="mean",
+    show.names=T,
+    innerborder=NA
+    )
+
+beanplot(
+    NO3 ~ Season*River,
+    data=varam,
+    bw="nrd0",
+    ll=0.1,
+    col=list("deepskyblue3",c("darkorange2","black")),
+    horizontal=F,
+    main="Nitrate",
+    log="",
+    side="both",
+    beanlines="mean",
+    show.names=T,
+    innerborder=NA
+    )
+
+```
+
+### Bean Plot - In Inland Areas ###
+
+The estuarine sites were removed from these graphics.
+
+```{r echo = TRUE}
+
+varam.inland <- varam[-c(1:6, 31:36, 67:75),]
+
+```
+
+```{r echo = FALSE, fig.width = 10, fig.height = 6}
+
+par(
+    mar=c(2,2,2,2), 
+    mfcol=c(3,5)
+    )
+
+beanplot(
+    Temperature ~ Season*River,
+    data=varam.inland,
+    bw="nrd0",
+    ll=0.1,
+    col=list("deepskyblue3",c("darkorange2","black")),
+    horizontal=F,
+    main="Temperature",
+    log="",
+    side="both",
+    beanlines="mean",
+    show.names=T,
+    innerborder=NA
+    )
+
+beanplot(
+    Conductivity ~ Season*River,
+    data=varam.inland,
+    bw="nrd0",
+    ll=0.1,
+    col=list("deepskyblue3",c("darkorange2","black")),
+    horizontal=F,
+    main="Conductivity",
+    log="",
+    side="both",
+    beanlines="mean",
+    show.names=T,
+    innerborder=NA
+    )
+
+beanplot(
+    pH ~ Season*River,
+    data=varam.inland,
+    bw="nrd0",
+    ll=0.1,
+    col=list("deepskyblue3",c("darkorange2","black")),
+    horizontal=F,
+    main="pH",
+    log="",
+    side="both",
+    beanlines="mean",
+    show.names=T,
+    innerborder=NA
+    )
+
+beanplot(
+    Salinity ~ Season*River,
+    data=varam.inland,
+    bw="nrd0",
+    ll=0.1,
+    col=list("deepskyblue3",c("darkorange2","black")),
+    horizontal=F,
+    main="Salinity",
+    log="",
+    side="both",
+    beanlines="mean",
+    show.names=T,
+    innerborder=NA
+    )
+
+beanplot(
+    HCO3 ~ Season*River,
+    data=varam.inland,
+    bw="nrd0",
+    ll=0.1,
+    col=list("deepskyblue3",c("darkorange2","black")),
+    horizontal=F,
+    main="Bicarbonates",
+    log="",
+    side="both",
+    beanlines="mean",
+    show.names=T,
+    innerborder=NA
+    )
+
+beanplot(
+    Cl ~ Season*River,
+    data=varam.inland,
+    bw="nrd0",
+    ll=0.1,
+    col=list("deepskyblue3",c("darkorange2","black")),
+    horizontal=F,
+    main="Chloride",
+    log="",
+    side="both",
+    beanlines="mean",
+    show.names=T,
+    innerborder=NA
+    )
+
+beanplot(
+    Hardness ~ Season*River,
+    data=varam.inland,
+    bw="nrd0",
+    ll=0.1,
+    col=list("deepskyblue3",c("darkorange2","black")),
+    horizontal=F,
+    main="Hardness",
+    log="",
+    side="both",
+    beanlines="mean",
+    show.names=T,
+    innerborder=NA
+    )
+
+beanplot(
+    Ca ~ Season*River,
+    data=varam.inland,
+    bw="nrd0",
+    ll=0.1,
+    col=list("deepskyblue3",c("darkorange2","black")),
+    horizontal=F,
+    main="Calcium",
+    log="",
+    side="both",
+    beanlines="mean",
+    show.names=T,
+    innerborder=NA
+    )
+
+beanplot(
+    Mg ~ Season*River,
+    data=varam.inland,
+    bw="nrd0",
+    ll=0.1,
+    col=list("deepskyblue3",c("darkorange2","black")),
+    horizontal=F,
+    main="Magnesium",
+    log="",
+    side="both",
+    beanlines="mean",
+    show.names=T,
+    innerborder=NA
+    )
+
+beanplot(
+    SO4 ~ Season*River,
+    data=varam.inland,
+    bw="nrd0",
+    ll=0.1,
+    col=list("deepskyblue3",c("darkorange2","black")),
+    horizontal=F,
+    main="Sulphate",
+    log="",
+    side="both",
+    beanlines="mean",
+    show.names=T,
+    innerborder=NA
+    )
+
+beanplot(
+    Na ~ Season*River,
+    data=varam.inland,
+    bw="nrd0",
+    ll=0.1,
+    col=list("deepskyblue3",c("darkorange2","black")),
+    horizontal=F,
+    main="Sodium",
+    log="",
+    side="both",
+    beanlines="mean",
+    show.names=T,
+    innerborder=NA
+    )
+
+beanplot(
+    K ~ Season*River,
+    data=varam.inland,
+    bw="nrd0",
+    ll=0.1,
+    col=list("deepskyblue3",c("darkorange2","black")),
+    horizontal=F,
+    main="Potassium",
+    log="",
+    side="both",
+    beanlines="mean",
+    show.names=T,
+    innerborder=NA
+    )
+legend(
+    "right",
+    fill=c("deepskyblue3","darkorange2"),
+    legend=c("Winter","Summer"),
+    bty="n",
+    ncol=1
+    )
+
+beanplot(
+    SiO2 ~ Season*River,
+    data=varam.inland,
+    bw="nrd0",
+    ll=0.1,
+    col=list("deepskyblue3",c("darkorange2","black")),
+    horizontal=F,
+    main="Silica",
+    log="",
+    side="both",
+    beanlines="mean",
+    show.names=T,
+    innerborder=NA
+    )
+
+beanplot(
+    NO3 ~ Season*River,
+    data=varam.inland,
+    bw="nrd0",
+    ll=0.1,
+    col=list("deepskyblue3",c("darkorange2","black")),
+    horizontal=F,
+    main="Nitrate",
+    log="",
+    side="both",
+    beanlines="mean",
+    show.names=T,
+    innerborder=NA
+    )
+```
+
+
+## Summer Data ##
+
+These data include only the summer measurements doing in the three rivers.
+
+```{r echo = FALSE}
+
+summary.summer <- pastecs::stat.desc(
+    varam.summer[,c(4:19)], 
+    )
+
+summary.summer <- round(
+    summary.summer, 2
+    )
+
+summary.summer %>% 
+    kable(caption = "Statistical summary of physical and chemical variables measured in summer",
+          align = "cccccccccccccccc") %>% 
+    kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
+                  font_size = 11,
+                  position = "center",
+                  full_width = T) %>%
+    scroll_box(height = "300px", width = "900px")
+```
+
+
