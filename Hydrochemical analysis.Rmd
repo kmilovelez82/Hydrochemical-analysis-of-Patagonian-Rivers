@@ -67,6 +67,422 @@ summary.sta %>%
 
 ```
 
+### Histogram density plots ###
+
+```{r echo = FALSE, fig.width=12, fig.height=8}
+
+p1 <- ggplot (
+  data = varam,
+  aes(x = pH)
+  ) +
+  geom_histogram(
+    aes(y = ..density..), 
+    colour = "#E69F00", 
+    fill = "white", 
+    size = 0.9
+    ) +
+  geom_vline(
+    aes(xintercept = 8.656526), 
+    color = "blue",  
+    linetype = "dashed", 
+    size = 1, 
+    na.rm=TRUE
+    ) +
+  geom_density(
+    colour= "#E69F00", 
+    fill="#E69F00",
+    alpha=0.6, 
+    size = 0.5
+    ) +
+  labs(
+    x = "pH", 
+    y = "Density"
+    ) +
+  theme_minimal()
+
+p2 <- ggplot (
+  data = varam,
+  aes(x = Conductivity)
+  ) +
+  geom_histogram(
+    aes(y = ..density..), 
+    colour = "#E69F00", 
+    fill = "white", 
+    size = 0.9
+    ) +
+  geom_vline(
+    aes(xintercept = 2.678842), 
+    color = "blue",  
+    linetype = "dashed", 
+    size = 1, 
+    na.rm=TRUE
+    ) +
+  geom_density(
+    colour= "#E69F00", 
+    fill="#E69F00",
+    alpha=0.6, 
+    size = 0.5
+    ) +
+  labs(
+    x = "Conductivity", 
+    y = "Density"
+    ) +
+  theme_minimal()
+
+p3 <- ggplot (
+  data = varam,
+  aes(x = Temperature)
+  ) +
+  geom_histogram(
+    aes(y = ..density..), 
+    colour = "#E69F00", 
+    fill = "white", 
+    size = 0.9
+    ) +
+  geom_vline(
+    aes(xintercept = mean(varam$Temperature, na.rm = T)), 
+    color = "blue",  
+    linetype = "dashed", 
+    size = 1, 
+    na.rm=TRUE
+    ) +
+  geom_density(
+    colour= "#E69F00", 
+    fill="#E69F00",
+    alpha=0.6, 
+    size = 0.5
+    ) +
+  labs(
+    x = "Temperature", 
+    y = "Density"
+    ) +
+  theme_minimal()
+
+p4 <- ggplot (
+  data = varam,
+  aes(x = Salinity)
+  ) +
+  geom_histogram(
+    aes(y = ..density..), 
+    colour = "#E69F00", 
+    fill = "white", 
+    size = 0.9
+    ) +
+  geom_vline(
+    aes(xintercept = mean(varam$Salinity, na.rm = T)), 
+    color = "blue",  
+    linetype = "dashed", 
+    size = 1, 
+    na.rm=TRUE
+    ) +
+  geom_density(
+    colour= "#E69F00", 
+    fill="#E69F00",
+    alpha=0.6, 
+    size = 0.5
+    ) +
+  labs(
+    x = "Salinity", 
+    y = "Density"
+    ) +
+  theme_minimal()
+
+p5 <- ggplot (
+  data = varam,
+  aes(x = HCO3)
+  ) +
+  geom_histogram(
+    aes(y = ..density..), 
+    colour = "#E69F00", 
+    fill = "white", 
+    size = 0.9
+    ) +
+  geom_vline(
+    aes(xintercept = mean(varam$HCO3, na.rm = T)), 
+    color = "blue",  
+    linetype = "dashed", 
+    size = 1, 
+    na.rm=TRUE
+    ) +
+  geom_density(
+    colour= "#E69F00", 
+    fill="#E69F00",
+    alpha=0.6, 
+    size = 0.5
+    ) +
+  labs(
+    x = "Bicarbonates", 
+    y = "Density"
+    ) +
+  theme_minimal()
+
+p6 <- ggplot (
+  data = varam,
+  aes(x = Cl)
+  ) +
+  geom_histogram(
+    aes(y = ..density..), 
+    colour = "#E69F00", 
+    fill = "white", 
+    size = 0.9
+    ) +
+  geom_vline(
+    aes(xintercept = mean(varam$Cl, na.rm = T)), 
+    color = "blue",  
+    linetype = "dashed", 
+    size = 1, 
+    na.rm=TRUE
+    ) +
+  geom_density(
+    colour= "#E69F00", 
+    fill="#E69F00",
+    alpha=0.6, 
+    size = 0.5
+    ) +
+  labs(
+    x = "Chlorine", 
+    y = "Density"
+    ) +
+  theme_minimal()
+
+p7 <- ggplot (
+  data = varam,
+  aes(x = Hardness)
+  ) +
+  geom_histogram(
+    aes(y = ..density..), 
+    colour = "#E69F00", 
+    fill = "white", 
+    size = 0.9
+    ) +
+  geom_vline(
+    aes(xintercept = mean(varam$Hardness, na.rm = T)), 
+    color = "blue",  
+    linetype = "dashed", 
+    size = 1, 
+    na.rm=TRUE
+    ) +
+  geom_density(
+    colour= "#E69F00", 
+    fill="#E69F00",
+    alpha=0.6, 
+    size = 0.5
+    ) +
+  labs(
+    x = "Hardness", 
+    y = "Density"
+    ) +
+  theme_minimal()
+
+p8 <- ggplot (
+  data = varam,
+  aes(x = Ca)
+  ) +
+  geom_histogram(
+    aes(y = ..density..), 
+    colour = "#E69F00", 
+    fill = "white", 
+    size = 0.9
+    ) +
+  geom_vline(
+    aes(xintercept = mean(varam$Ca, na.rm = T)), 
+    color = "blue",  
+    linetype = "dashed", 
+    size = 1, 
+    na.rm=TRUE
+    ) +
+  geom_density(
+    colour= "#E69F00", 
+    fill="#E69F00",
+    alpha=0.6, 
+    size = 0.5
+    ) +
+  labs(
+    x = "Calcium", 
+    y = "Density"
+    ) +
+  theme_minimal()
+
+p9 <- ggplot (
+  data = varam,
+  aes(x = Mg)
+  ) +
+  geom_histogram(
+    aes(y = ..density..), 
+    colour = "#E69F00", 
+    fill = "white", 
+    size = 0.9
+    ) +
+  geom_vline(
+    aes(xintercept = mean(varam$Mg, na.rm = T)), 
+    color = "blue",  
+    linetype = "dashed", 
+    size = 1, 
+    na.rm=TRUE
+    ) +
+  geom_density(
+    colour= "#E69F00", 
+    fill="#E69F00",
+    alpha=0.6, 
+    size = 0.5
+    ) +
+  labs(
+    x = "Magnesium", 
+    y = "Density"
+    ) +
+  theme_minimal()
+
+p10 <- ggplot (
+  data = varam,
+  aes(x = SO4)
+  ) +
+  geom_histogram(
+    aes(y = ..density..), 
+    colour = "#E69F00", 
+    fill = "white", 
+    size = 0.9
+    ) +
+  geom_vline(
+    aes(xintercept = mean(varam$SO4, na.rm = T)), 
+    color = "blue",  
+    linetype = "dashed", 
+    size = 1, 
+    na.rm=TRUE
+    ) +
+  geom_density(
+    colour= "#E69F00", 
+    fill="#E69F00",
+    alpha=0.6, 
+    size = 0.5
+    ) +
+  labs(
+    x = "Sulphate", 
+    y = "Density"
+    ) +
+  theme_minimal()
+
+p11 <- ggplot (
+  data = varam,
+  aes(x = Na)
+  ) +
+  geom_histogram(
+    aes(y = ..density..), 
+    colour = "#E69F00", 
+    fill = "white", 
+    size = 0.9
+    ) +
+  geom_vline(
+    aes(xintercept = mean(varam$Na, na.rm = T)), 
+    color = "blue",  
+    linetype = "dashed", 
+    size = 1, 
+    na.rm=TRUE
+    ) +
+  geom_density(
+    colour= "#E69F00", 
+    fill="#E69F00",
+    alpha=0.6, 
+    size = 0.5
+    ) +
+  labs(
+    x = "Sodium", 
+    y = "Density"
+    ) +
+  theme_minimal()
+
+p12 <- ggplot (
+  data = varam,
+  aes(x = K)
+  ) +
+  geom_histogram(
+    aes(y = ..density..), 
+    colour = "#E69F00", 
+    fill = "white", 
+    size = 0.9
+    ) +
+  geom_vline(
+    aes(xintercept = mean(varam$K, na.rm = T)), 
+    color = "blue",  
+    linetype = "dashed", 
+    size = 1, 
+    na.rm=TRUE
+    ) +
+  geom_density(
+    colour= "#E69F00", 
+    fill="#E69F00",
+    alpha=0.6, 
+    size = 0.5
+    ) +
+  labs(
+    x = "Potassium", 
+    y = "Density"
+    ) +
+  theme_minimal()
+
+p13 <- ggplot (
+  data = varam,
+  aes(x = SiO2)
+  ) +
+  geom_histogram(
+    aes(y = ..density..), 
+    colour = "#E69F00", 
+    fill = "white", 
+    size = 0.9
+    ) +
+  geom_vline(
+    aes(xintercept = mean(varam$SiO2, na.rm = T)), 
+    color = "blue",  
+    linetype = "dashed", 
+    size = 1, 
+    na.rm=TRUE
+    ) +
+  geom_density(
+    colour= "#E69F00", 
+    fill="#E69F00",
+    alpha=0.6, 
+    size = 0.5
+    ) +
+  labs(
+    x = "Silica", 
+    y = "Density"
+    ) +
+  theme_minimal()
+
+p14 <- ggplot (
+  data = varam,
+  aes(x = NO3)
+  ) +
+  geom_histogram(
+    aes(y = ..density..), 
+    colour = "#E69F00", 
+    fill = "white", 
+    size = 0.9
+    ) +
+  geom_vline(
+    aes(xintercept = mean(varam$NO3, na.rm = T)), 
+    color = "blue",  
+    linetype = "dashed", 
+    size = 1, 
+    na.rm=TRUE
+    ) +
+  geom_density(
+    colour= "#E69F00", 
+    fill="#E69F00",
+    alpha=0.6, 
+    size = 0.5
+    ) +
+  labs(
+    x = "Nitrates", 
+    y = "Density"
+    ) +
+  theme_minimal()
+
+grid.arrange(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, nrow = 5, ncol = 3)
+
+```
+
+
+
 ### Bean Plot - Complete Data ###
 
 Beanplots of physical and hydrochemical variables measured in the Colorado, Negro and Chubut Rivers. The dotted line is the overall mean for each variables while the solid line indicates the mean value in each season.
