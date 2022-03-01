@@ -103,6 +103,20 @@ These data base include measurements of summer and winter, as well as the coasta
 varam <- readRDS("data.rds") ##original data##
 ```
 
+Code to data filtered by summer and winter
+
+```{r Inland.data, echo = TRUE}
+
+varam.inland <- varam[-c(1:6, 31:36, 67:76), -c(6, 7)]
+
+varam.summer <- varam.inland %>% 
+    filter(Season == "summer") ##summer data##
+
+varam.winter <- varam.inland[-c(2, 20),] %>% 
+    filter(Season == "winter")##winter data##
+
+```
+
 
 ```{r Data, echo = FALSE}
 varam %>% 
@@ -549,7 +563,7 @@ grid.arrange(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, nrow =
 
 ```
 
-### Bean Plot - Complete Data ###
+### Bean Plot ###
 
 Beanplots of physical and hydrochemical variables measured in the Colorado, Negro and Chubut Rivers. The dotted line is the overall mean for each variables while the solid line indicates the mean value in each season.
 
@@ -781,212 +795,130 @@ beanplot(
 
 ```
 
-### Multinormality test ###
-
-Data transformed code:
-
-```{r Data.transformed}
-
-##As squared root##
-varam.sqrt <- apply(
-  varam[complete.cases(varam), -c(1:3, 6:7)], 
-  2, 
-  sqrt
-  )
-
-varam.sqrt <- as.data.frame(varam.sqrt)
-varam.sqrt <- cbind(
-  varam[complete.cases(varam), c(1:3)],
-  round(varam.sqrt, digits = 2)
-  )
-
-
-##As logarithm except pH##
-varam.log <- apply(
-  varam[complete.cases(varam), -c(1:4, 6:7)], 
-  2, 
-  log1p
-  )
-
-varam.log <- as.data.frame(varam.log)
-varam.log <- cbind(
-  varam[complete.cases(varam), c(1:4)],
-  round(varam.log, digits = 2)
-  )
-
-```
-
-Multivariate normality Q-Q plots and distribution of data trasformed: according to Shapiro-Wilk test, it can't assume multinormality in all cases (untransformed and transformed data). The p-value is greater than 0.05, hence the distribution of the given data is different from normal distribution significantly.
-
-<div class = "row">
-<div class = "col-md-6">
-```{r QQplot.untrans, echo = FALSE, fig.height = 10, fig.width = 14}
-multi.test1 <- rstatix::mshapiro_test(
-    varam[complete.cases(varam),-c(1:3, 6:7)])
-
-
-RVAideMemoire::mqqnorm(
-    varam[complete.cases(varam),-c(1:3, 6:7)], 
-    main = expression(paste("Multinormal Q-Q plot for complete data untransformed - Shapiro test: p value = 7x10" ^-21)))
-```
-</div>
-
-<div class = "col-md-6">
-```{r Hist.untrans, echo = FALSE, fig.height = 10, fig.width = 14}
-
-varam.large1 <- gather(
-    data = varam,
-    key = "Variable",
-    value = "Value",
-    -c(River, Site, Season, Turbidity, D.Oxygen))
-
-
-ggplot (
-  data = varam.large1,
-  aes(x = Value)
-  ) +
-  geom_histogram(
-    aes(y = ..density..), 
-    colour = "#E69F00", 
-    fill = "white", 
-    size = 0.9
-    ) +
-  geom_density(
-    colour= "#E69F00", 
-    fill="#E69F00",
-    alpha=0.6, 
-    size = 0.5
-    ) +
-  labs(
-    y = "Density"
-    ) +
-  theme_elegante()
-
-```
-</div>
-</div>
-
-
-<div class = "row">
-<div class = "col-md-6">
-```{r QQplot.sqrt, echo = FALSE, fig.height = 10, fig.width = 14}
-multi.test2 <- rstatix::mshapiro_test(
-    varam.sqrt[,-c(1:3)])
-
-
-RVAideMemoire::mqqnorm(
-    varam.sqrt[,-c(1:3)], 
-    main = expression(paste("Multinormal Q-Q plot for complete data square root-transformed - Shapiro test: p value = 1.0x10" ^-17)))
-```
-</div>
-
-<div class = "col-md-6">
-```{r Hist.sqrt, echo = FALSE, fig.height = 10, fig.width = 14}
-
-varam.large2 <- gather(
-    data = varam.sqrt,
-    key = "Variable",
-    value = "Value",
-    -c(River, Site, Season)
-    )
-
-ggplot (
-  data = varam.large2,
-  aes(x = Value)
-  ) +
-  geom_histogram(
-    aes(y = ..density..), 
-    colour = "#E69F00", 
-    fill = "white", 
-    size = 0.9
-    ) +
-  geom_density(
-    colour= "#E69F00", 
-    fill="#E69F00",
-    alpha=0.6, 
-    size = 0.5
-    ) +
-  labs(
-    x = "Square-root transformed data",
-    y = "Density"
-    ) +
-  theme_elegante()
-
-```
-</div>
-</div>
-
-
-<div class = "row">
-<div class = "col-md-6">
-```{r QQplot.log, echo = FALSE, fig.height = 10, fig.width = 14}
-multi.test3 <- rstatix::mshapiro_test(
-    varam.log[,-c(1:3)])
-
-
-RVAideMemoire::mqqnorm(
-    varam.log[,-c(1:3)], 
-    main = expression(paste("Multinormal Q-Q plot for complete data log-transformed - Shapiro test: p value = 8.3x10" ^-15)))
-```
-</div>
-
-<div class = "col-md-6">
-```{r Hist.log, echo = FALSE, fig.height = 10, fig.width = 14}
-
-varam.large3 <- gather(
-    data = varam.log,
-    key = "Variable",
-    value = "Value",
-    -c(River, Site, Season)
-    )
-
-ggplot (
-  data = varam.large3,
-  aes(x = Value)
-  ) +
-  geom_histogram(
-    aes(y = ..density..), 
-    colour = "#E69F00", 
-    fill = "white", 
-    size = 0.9
-    ) +
-  geom_density(
-    colour= "#E69F00", 
-    fill="#E69F00",
-    alpha=0.6, 
-    size = 0.5
-    ) +
-  labs(
-    x = "Log-transformed data",
-    y = "Density"
-    ) +
-  theme_elegante()
-
-```
-</div>
-</div>
-
 
 ## Inland Areas ##
 
 These data base include measurements of summer and winter taken in inland areas (to reduce the salinity effect the estuarine sites were remove from these analysis)
 
-### Bean Plots ###
+### Summary Summer Data ###
 
-Code to data filtered by summer and winter
+These data include only the summer measurements doing in the three rivers.
 
-```{r Inland.data, echo = TRUE}
+```{r echo = FALSE}
 
-varam.inland <- varam[-c(1:6, 31:36, 67:76), -c(6, 7)]
+summary.summer <- pastecs::stat.desc(
+    varam.summer[, c(4:17)], 
+    )
 
-varam.summer <- varam.inland %>% 
-    filter(Season == "summer") ##summer data##
+summary.summer <- round(
+    summary.summer, 2
+    )
 
-varam.winter <- varam.inland[-c(2, 20),] %>% 
-    filter(Season == "winter")##winter data##
+summary.summer %>% 
+    kable(caption = "Statistical summary of physical and chemical variables measured in summer",
+          align = "cccccccccccccc") %>% 
+    kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
+                  font_size = 11,
+                  position = "center",
+                  full_width = T) %>%
+    scroll_box(height = "300px", width = "900px")
+```
+
+Data transformed code:
+
+```{r summer.data.transformed}
+
+##As squared root##
+varam.summer.sqrt <- apply(
+  varam.summer[,-c(1:3)], 
+  2, 
+  sqrt
+  )
+
+varam.summer.sqrt <- as.data.frame(varam.summer.sqrt)
+varam.summer.sqrt <- cbind(
+  varam.summer[,c(1:3)],
+  round(varam.summer.sqrt, digits = 2)
+  )
+
+
+##As logarithm except pH##
+varam.summer.log <- apply(
+  varam.summer[,-c(1:4)], 
+  2, 
+  log1p
+  )
+
+varam.summer.log <- as.data.frame(varam.summer.log)
+varam.summer.log <- cbind(
+  varam.summer[,c(1:4)],
+  round(varam.summer.log, digits = 2)
+  )
 
 ```
 
+
+### Summary Winter Data ###
+
+These data include only the winter measurements doing in the three rivers.
+
+```{r echo = FALSE}
+
+summary.winter <- pastecs::stat.desc(
+    varam.winter[, c(4:17)], 
+    )
+
+summary.winter <- round(
+    summary.winter, 2
+    )
+
+summary.winter %>% 
+    kable(caption = "Statistical summary of physical and chemical variables measured in winter",
+          align = "cccccccccccccc") %>% 
+    kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
+                  font_size = 11,
+                  position = "center",
+                  full_width = T) %>%
+    scroll_box(height = "300px", width = "900px")
+```
+
+
+Data transformed code:
+
+
+```{r winter.data.transformed}
+
+##As squared root##
+varam.winter.sqrt <- apply(
+  varam.winter[,-c(1:3)], 
+  2, 
+  sqrt
+  )
+
+varam.winter.sqrt <- as.data.frame(varam.winter.sqrt)
+varam.winter.sqrt <- cbind(
+  varam.winter[,c(1:3)],
+  round(varam.winter.sqrt, digits = 2)
+  )
+
+
+##As logarithm except pH##
+varam.winter.log <- apply(
+  varam.winter[,-c(1:4)], 
+  2, 
+  log1p
+  )
+
+varam.winter.log <- as.data.frame(varam.winter.log)
+varam.winter.log <- cbind(
+  varam.winter[,c(1:4)],
+  round(varam.winter.log, digits = 2)
+  )
+
+```
+
+
+### Bean Plots ###
 
 ```{r Beanplot.Inland, echo = FALSE, fig.width = 10, fig.height = 6}
 
@@ -1213,67 +1145,196 @@ beanplot(
     )
 ```
 
-### Summer Data Analysis ###
 
-These data include only the summer measurements doing in the three rivers.
+# **Multinormality Test** #
 
-```{r echo = FALSE}
-
-summary.summer <- pastecs::stat.desc(
-    varam.summer[, c(4:17)], 
-    )
-
-summary.summer <- round(
-    summary.summer, 2
-    )
-
-summary.summer %>% 
-    kable(caption = "Statistical summary of physical and chemical variables measured in summer",
-          align = "cccccccccccccc") %>% 
-    kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
-                  font_size = 11,
-                  position = "center",
-                  full_width = T) %>%
-    scroll_box(height = "300px", width = "900px")
-```
-
+## Complete Data ##
 
 Data transformed code:
 
-
-```{r summer.data.transformed}
+```{r Data.transformed}
 
 ##As squared root##
-varam.summer.sqrt <- apply(
-  varam.summer[,-c(1:3)], 
+varam.sqrt <- apply(
+  varam[complete.cases(varam), -c(1:3, 6:7)], 
   2, 
   sqrt
   )
 
-varam.summer.sqrt <- as.data.frame(varam.summer.sqrt)
-varam.summer.sqrt <- cbind(
-  varam.summer[,c(1:3)],
-  round(varam.summer.sqrt, digits = 2)
+varam.sqrt <- as.data.frame(varam.sqrt)
+varam.sqrt <- cbind(
+  varam[complete.cases(varam), c(1:3)],
+  round(varam.sqrt, digits = 2)
   )
 
 
 ##As logarithm except pH##
-varam.summer.log <- apply(
-  varam.summer[,-c(1:4)], 
+varam.log <- apply(
+  varam[complete.cases(varam), -c(1:4, 6:7)], 
   2, 
   log1p
   )
 
-varam.summer.log <- as.data.frame(varam.summer.log)
-varam.summer.log <- cbind(
-  varam.summer[,c(1:4)],
-  round(varam.summer.log, digits = 2)
+varam.log <- as.data.frame(varam.log)
+varam.log <- cbind(
+  varam[complete.cases(varam), c(1:4)],
+  round(varam.log, digits = 2)
   )
 
 ```
 
-### Multinormality Test - Summer Data###
+Multivariate normality Q-Q plots and distribution of data trasformed: according to Shapiro-Wilk test, it can't assume multinormality in all cases (untransformed and transformed data). The p-value is greater than 0.05, hence the distribution of the given data is different from normal distribution significantly.
 
+<div class = "row">
+<div class = "col-md-6">
+```{r QQplot.untrans, echo = FALSE, fig.height = 10, fig.width = 14}
+multi.test1 <- rstatix::mshapiro_test(
+    varam[complete.cases(varam),-c(1:3, 6:7)])
+
+
+RVAideMemoire::mqqnorm(
+    varam[complete.cases(varam),-c(1:3, 6:7)], 
+    main = expression(paste("Multinormal Q-Q plot for complete data untransformed - Shapiro test: p value = 7x10" ^-21)))
+```
+</div>
+
+<div class = "col-md-6">
+```{r Hist.untrans, echo = FALSE, fig.height = 10, fig.width = 14}
+
+varam.large1 <- gather(
+    data = varam,
+    key = "Variable",
+    value = "Value",
+    -c(River, Site, Season, Turbidity, D.Oxygen))
+
+
+ggplot (
+  data = varam.large1,
+  aes(x = Value)
+  ) +
+  geom_histogram(
+    aes(y = ..density..), 
+    colour = "#E69F00", 
+    fill = "white", 
+    size = 0.9
+    ) +
+  geom_density(
+    colour= "#E69F00", 
+    fill="#E69F00",
+    alpha=0.6, 
+    size = 0.5
+    ) +
+  labs(
+    y = "Density"
+    ) +
+  theme_elegante()
+
+```
+</div>
+</div>
+
+
+<div class = "row">
+<div class = "col-md-6">
+```{r QQplot.sqrt, echo = FALSE, fig.height = 10, fig.width = 14}
+multi.test2 <- rstatix::mshapiro_test(
+    varam.sqrt[,-c(1:3)])
+
+
+RVAideMemoire::mqqnorm(
+    varam.sqrt[,-c(1:3)], 
+    main = expression(paste("Multinormal Q-Q plot for complete data square root-transformed - Shapiro test: p value = 1.0x10" ^-17)))
+```
+</div>
+
+<div class = "col-md-6">
+```{r Hist.sqrt, echo = FALSE, fig.height = 10, fig.width = 14}
+
+varam.large2 <- gather(
+    data = varam.sqrt,
+    key = "Variable",
+    value = "Value",
+    -c(River, Site, Season)
+    )
+
+ggplot (
+  data = varam.large2,
+  aes(x = Value)
+  ) +
+  geom_histogram(
+    aes(y = ..density..), 
+    colour = "#E69F00", 
+    fill = "white", 
+    size = 0.9
+    ) +
+  geom_density(
+    colour= "#E69F00", 
+    fill="#E69F00",
+    alpha=0.6, 
+    size = 0.5
+    ) +
+  labs(
+    x = "Square-root transformed data",
+    y = "Density"
+    ) +
+  theme_elegante()
+
+```
+</div>
+</div>
+
+
+<div class = "row">
+<div class = "col-md-6">
+```{r QQplot.log, echo = FALSE, fig.height = 10, fig.width = 14}
+multi.test3 <- rstatix::mshapiro_test(
+    varam.log[,-c(1:3)])
+
+
+RVAideMemoire::mqqnorm(
+    varam.log[,-c(1:3)], 
+    main = expression(paste("Multinormal Q-Q plot for complete data log-transformed - Shapiro test: p value = 8.3x10" ^-15)))
+```
+</div>
+
+<div class = "col-md-6">
+```{r Hist.log, echo = FALSE, fig.height = 10, fig.width = 14}
+
+varam.large3 <- gather(
+    data = varam.log,
+    key = "Variable",
+    value = "Value",
+    -c(River, Site, Season)
+    )
+
+ggplot (
+  data = varam.large3,
+  aes(x = Value)
+  ) +
+  geom_histogram(
+    aes(y = ..density..), 
+    colour = "#E69F00", 
+    fill = "white", 
+    size = 0.9
+    ) +
+  geom_density(
+    colour= "#E69F00", 
+    fill="#E69F00",
+    alpha=0.6, 
+    size = 0.5
+    ) +
+  labs(
+    x = "Log-transformed data",
+    y = "Density"
+    ) +
+  theme_elegante()
+
+```
+</div>
+</div>
+
+
+## Inland Summer Data ###
 
 ```{r test.summer.inland, echo = FALSE, fig.height = 6, fig.width = 10}
 
@@ -1414,116 +1475,7 @@ ggplot (
 
 ```
 
-
-### Correlation Analysis - Summer Data###
-
-```{r correlation.summer, echo = FALSE, fig.width = 10, fig.height = 8}
-
-library(ggpubr)
-library(Hmisc)
-library(corrplot)
-
-col <- colorRampPalette(c("darkorange", "white", "steelblue4"))(20)
-
-pvalue.summer <- rcorr(
-  as.matrix(varam.summer[,-c(1:3)]), 
-  type="spearman"
-  )
-
-M.summer <- pvalue.summer$r
-
-p_mat.summer <- pvalue.summer$P
-
-corrplot(M.summer,
-         type = "upper",
-         order = "hclust",
-         col = col,
-         bg = "palegreen",
-         tl.col = "black",
-         tl.srt = 45,
-         p.mat = p_mat.summer,
-         sig.level = 0.05
-         )
-
-```
-
-```{r echo = FALSE, fig.align = "center", fig.width = 10, fig.height = 12}
-
-library(GGally)
-
-ggpairs(
-  data = varam.summer[, -c(1:3)],
-  lower = list(continuous = wrap("smooth", pch = 16, alpha = 0.3, color = "darkorchid4")),
-  diag = list(continuous = wrap("barDiag", color = "white", fill = "#E69F00")), 
-  axisLabels = "none",
-  title = "Correlation Matrix for Inland Summer Data"
-  ) +
-  theme_bw()
-
-```
-
-
-### Winter Data Analysis ###
-
-These data include only the winter measurements doing in the three rivers.
-
-```{r echo = FALSE}
-
-summary.winter <- pastecs::stat.desc(
-    varam.winter[, c(4:17)], 
-    )
-
-summary.winter <- round(
-    summary.winter, 2
-    )
-
-summary.winter %>% 
-    kable(caption = "Statistical summary of physical and chemical variables measured in winter",
-          align = "cccccccccccccc") %>% 
-    kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
-                  font_size = 11,
-                  position = "center",
-                  full_width = T) %>%
-    scroll_box(height = "300px", width = "900px")
-```
-
-
-Data transformed code:
-
-
-```{r winter.data.transformed}
-
-##As squared root##
-varam.winter.sqrt <- apply(
-  varam.winter[,-c(1:3)], 
-  2, 
-  sqrt
-  )
-
-varam.winter.sqrt <- as.data.frame(varam.winter.sqrt)
-varam.winter.sqrt <- cbind(
-  varam.winter[,c(1:3)],
-  round(varam.winter.sqrt, digits = 2)
-  )
-
-
-##As logarithm except pH##
-varam.winter.log <- apply(
-  varam.winter[,-c(1:4)], 
-  2, 
-  log1p
-  )
-
-varam.winter.log <- as.data.frame(varam.winter.log)
-varam.winter.log <- cbind(
-  varam.winter[,c(1:4)],
-  round(varam.winter.log, digits = 2)
-  )
-
-```
-
-### Multinormality Test - Winter Data###
-
+## Inland Winter Data ##
 
 ```{r test.winter.inland, echo = FALSE, fig.height = 6, fig.width = 10}
 
@@ -1535,7 +1487,6 @@ RVAideMemoire::mqqnorm(
     varam.winter[,-c(1:3)], 
     main = expression(paste("Multinormal Q-Q plot for inland winter data untransformed - Shapiro test: p value = 7.9x10" ^-12)))
 ```
-
 
 ```{r Hist.winter.inland, echo = FALSE, fig.height = 10, fig.width = 14}
 
@@ -1582,7 +1533,6 @@ RVAideMemoire::mqqnorm(
     main = expression(paste("Multinormal Q-Q plot for inland winter data square-root transformed - Shapiro test: p value = 1.4x10" ^-9)))
 ```
 
-
 ```{r Hist.winter.sqrt.inland, echo = FALSE, fig.height = 10, fig.width = 14}
 
 varam.large8 <- gather(
@@ -1617,7 +1567,6 @@ ggplot (
 
 ```
 
-
 ```{r test.winter.log.inland, echo = FALSE, fig.height = 6, fig.width = 10}
 
 multi.test9 <- rstatix::mshapiro_test(
@@ -1628,7 +1577,6 @@ RVAideMemoire::mqqnorm(
     varam.winter.log[,-c(1:3)], 
     main = expression(paste("Multinormal Q-Q plot for inland winter data Log-transformed - Shapiro test: p value = 7.9x10" ^-8)))
 ```
-
 
 ```{r Hist.winter.log.inland, echo = FALSE, fig.height = 10, fig.width = 14}
 
@@ -1664,7 +1612,56 @@ ggplot (
 
 ```
 
-### Correlation Analysis - Winter Data###
+# **Correlation Analysis** #
+
+## Inland Summer Data ##
+
+```{r correlation.summer, echo = FALSE, fig.width = 10, fig.height = 8}
+
+library(ggpubr)
+library(Hmisc)
+library(corrplot)
+
+col <- colorRampPalette(c("darkorange", "white", "steelblue4"))(20)
+
+pvalue.summer <- rcorr(
+  as.matrix(varam.summer[,-c(1:3)]), 
+  type="spearman"
+  )
+
+M.summer <- pvalue.summer$r
+
+p_mat.summer <- pvalue.summer$P
+
+corrplot(M.summer,
+         type = "upper",
+         order = "hclust",
+         col = col,
+         bg = "palegreen",
+         tl.col = "black",
+         tl.srt = 45,
+         p.mat = p_mat.summer,
+         sig.level = 0.05
+         )
+
+```
+
+```{r echo = FALSE, fig.align = "center", fig.width = 10, fig.height = 12}
+
+library(GGally)
+
+ggpairs(
+  data = varam.summer[, -c(1:3)],
+  lower = list(continuous = wrap("smooth", pch = 16, alpha = 0.3, color = "darkorchid4")),
+  diag = list(continuous = wrap("barDiag", color = "white", fill = "#E69F00")), 
+  axisLabels = "none",
+  title = "Correlation Matrix for Inland Summer Data"
+  ) +
+  theme_bw()
+
+```
+
+## Inland Winter Data ##
 
 ```{r correlation.winter, echo = FALSE, fig.width = 10, fig.height = 8}
 
@@ -1711,5 +1708,170 @@ ggpairs(
   theme_bw()
 
 ```
+
+# **Kruskal-Wallis and Dunn's Test** ##
+
+## Inland Summer Data ##
+
+```{r Kruskal-Wallis test, echo = FALSE}
+
+library(dunn.test)
+
+
+```
+
+
+# **Ordination Analysis ** #
+
+```{r pca.summer.complete, echo = F}
+
+library(devtools)
+library(ggbiplot)
+
+varam.summer.complet <- varam %>% filter(Season == "summer" )
+
+varam.pca.summer <- prcomp(
+  varam.summer.complet[, -c(1:3)], 
+  scale. = T
+  )
+
+
+p15 <- ggbiplot(
+  varam.pca.summer, scale = 1, 
+  obs.scale = 1, 
+  var.scale = 1, 
+  labels = varam.summer.complet$Site, 
+  labels.size = 2.5,
+  groups = varam.summer.complet$River, 
+  ellipse = F, 
+  circle = F
+  ) +
+  scale_color_discrete(name = "") +
+  geom_point(
+    aes(colour = varam.summer.complet$River),
+    size = 2
+    ) +
+  labs(
+    title = "PCA Summer Data Complete"
+  ) +
+  theme(
+    legend.direction = "horizontal", 
+    legend.position = "top"
+    ) +
+  theme_elegante()
+```
+
+```{r pca.winter.complet, echo = FALSE}
+
+varam.winter.complet <- varam %>% filter(Season == "winter")
+
+varam.winter.complet <- varam.winter.complet[complete.cases(varam.winter.complet),]
+
+varam.pca.winter <- prcomp(
+  varam.winter.complet[, -c(1:3)], 
+  scale. = T
+  )
+
+
+p16 <- ggbiplot(
+  varam.pca.winter, scale = 1, 
+  obs.scale = 1, 
+  var.scale = 1, 
+  labels = varam.winter.complet$Site, 
+  labels.size = 2.5,
+  groups = varam.winter.complet$River, 
+  ellipse = F, 
+  circle = F
+  ) +
+  scale_color_discrete(name = "") +
+  geom_point(
+    aes(colour = varam.winter.complet$River),
+    size = 2
+    ) +
+  labs(
+    title = "PCA Winter Data Complete"
+  ) +
+  theme(
+    legend.direction = "horizontal", 
+    legend.position = "top"
+    ) +
+  theme_elegante()
+
+```
+
+```{r pca.summer.inlet, echo = FALSE}
+
+varam.pca.summer.inlet <- prcomp(
+  varam.summer[, -c(1:3)], 
+  scale. = T
+  )
+
+
+p17 <- ggbiplot(
+  varam.pca.summer.inlet, scale = 1, 
+  obs.scale = 1, 
+  var.scale = 1, 
+  labels = varam.summer$Site, 
+  labels.size = 2.5,
+  groups = varam.summer$River, 
+  ellipse = T, 
+  circle = F
+  ) +
+  scale_color_discrete(name = "") +
+  geom_point(
+    aes(colour = varam.summer$River),
+    size = 2
+    ) +
+  labs(
+    title = "PCA Inlet Summer Data"
+  ) +
+  theme(
+    legend.direction = "horizontal", 
+    legend.position = "top"
+    ) +
+  theme_elegante()
+
+```
+
+```{r pca.winter.inlet, echo = FALSE}
+
+varam.pca.winter.inlet <- prcomp(
+  varam.winter[, -c(1:3)], 
+  scale. = T
+  )
+
+
+p18 <- ggbiplot(
+  varam.pca.winter.inlet, scale = 1, 
+  obs.scale = 1, 
+  var.scale = 1, 
+  labels = varam.winter$Site, 
+  labels.size = 2.5,
+  groups = varam.winter$River, 
+  ellipse = T, 
+  circle = F
+  ) +
+  scale_color_discrete(name = "") +
+  geom_point(
+    aes(colour = varam.winter$River),
+    size = 2
+    ) +
+  labs(
+    title = "PCA Inlet Winter Data"
+  ) +
+  theme(
+    legend.direction = "horizontal", 
+    legend.position = "top"
+    ) +
+  theme_elegante()
+
+```
+
+```{r PCA.Plots, echo = FALSE, fig.width=12, fig.height=12}
+
+grid.arrange(p15, p16, p17, p18, nrow = 2, ncol = 2)
+```
+
+
 
 
