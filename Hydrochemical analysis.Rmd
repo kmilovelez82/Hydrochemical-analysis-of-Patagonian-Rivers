@@ -1867,7 +1867,7 @@ p18 <- ggbiplot(
 
 ```
 
-```{r PCA.Plots, echo = FALSE, fig.width=12, fig.height=12}
+```{r PCA.Plots, echo = FALSE, fig.width = 12, fig.height = 12}
 
 grid.arrange(p15, p16, p17, p18, nrow = 2, ncol = 2)
 ```
