@@ -1713,10 +1713,41 @@ ggpairs(
 
 ## Inland Summer Data ##
 
-```{r Kruskal-Wallis test, echo = FALSE}
+```{r Kruskal-Wallis.summer.inland, echo = FALSE}
 
-library(dunn.test)
+dunn.summer <- varam.summer %>% 
+  gather("Variable", "Value", -c(River, Site, Season)) %>% 
+  group_by(Variable) %>% 
+  dunn_test(formula = Value ~ River, p.adjust.method = "bonferroni")
 
+dunn.summer %>% 
+    kable(caption = "Results of the Kruskal-Wallis and Dunn's multiple comparisons test among rivers in relation to the physical and hydrochemical variables measured in inland sites during summer. In addition, see beanplots for inland summer data",
+          align = "lccccccccc") %>% 
+    kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
+                  font_size = 11,
+                  position = "center",
+                  full_width = T) %>%
+    scroll_box(height = "300px", width = "900px")
+
+```
+
+## Inland Winter Data ##
+
+```{r Kruskal-Wallis.winter.inland, echo = FALSE}
+
+dunn.winter <- varam.winter %>% 
+  gather("Variable", "Value", -c(River, Site, Season)) %>% 
+  group_by(Variable) %>% 
+  dunn_test(formula = Value ~ River, p.adjust.method = "bonferroni")
+
+dunn.winter %>% 
+    kable(caption = "Results of the Kruskal-Wallis and Dunn's multiple comparisons test among rivers in relation to the physical and hydrochemical variables measured in inland sites during winter. In addition, see beanplot for inlanda winter data",
+          align = "lccccccccc") %>% 
+    kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
+                  font_size = 11,
+                  position = "center",
+                  full_width = T) %>%
+    scroll_box(height = "300px", width = "900px")
 
 ```
 
