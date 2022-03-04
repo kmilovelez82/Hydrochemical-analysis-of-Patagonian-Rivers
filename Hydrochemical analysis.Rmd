@@ -1904,7 +1904,217 @@ p18 <- ggbiplot(
 p18
 ```
 
+# **Piper Diagrams** #
 
+```{r Piper.diagram.summer, echo = FALSE}
+
+library(smwrGraphs)
+
+PD.summer <- transform(
+  varam.summer.complet, 
+  Ca.meq = conc2meq(Ca, "calcium"),
+  Mg.meq = conc2meq(Mg, "magnesium"),
+  Na.meq = conc2meq(Na, "sodium"),
+  K.meq = conc2meq(K, "potassium"),
+  Cl.meq = conc2meq(Cl, "chloride"),
+  SO4.meq = conc2meq(SO4, "sulfate"),
+  HCO3.meq = conc2meq(HCO3, "bicarb")
+  )                       
+
+PD.summer$sym <- c(
+  rep("circle", 3),
+  rep("circle", 12),
+  rep("square", 3),
+  rep("square", 15),
+  rep("uptri", 5),
+  rep("uptri", 12)
+  )
+
+
+setSweave("Piper Summer", 7, 7)
+
+AA.pl <- with(
+  PD.summer, 
+  piperPlot(
+    Ca.meq, 
+    Mg.meq, 
+    (Na.meq+K.meq),
+    Cl.meq, 
+    HCO3.meq, 
+    SO4.meq,
+  Plot = list(
+    name = River,
+    what = "points",
+    color = setColor(River),
+    symbol = sym
+        ),
+  zCat.title = "Sodium + Potasium",
+  xAn.title = "Chloride",
+  yAn.title = "Bicarbonate")
+  )
+
+addExplanation(AA.pl, where="ul", title="Piper Diagram Summer Data", box.off = FALSE)
+
+graphics.off()
+
+```
+![](C:/Users/Camilo/Documents/Principal/Gibhub/Patagonia Analysis/Hydrochemical-analysis-of-Patagonian-Rivers/Piper Summer.png)
+```{r Piper.diagram.winter, echo = FALSE}
+
+PD.winter <- transform(
+  varam.winter.complet, 
+  Ca.meq = conc2meq(Ca, "calcium"),
+  Mg.meq = conc2meq(Mg, "magnesium"),
+  Na.meq = conc2meq(Na, "sodium"),
+  K.meq = conc2meq(K, "potassium"),
+  Cl.meq = conc2meq(Cl, "chloride"),
+  SO4.meq = conc2meq(SO4, "sulfate"),
+  HCO3.meq = conc2meq(HCO3, "bicarb")
+  )                       
+
+PD.winter$sym <- c(
+  rep("circle", 10),
+  rep("square", 18),
+  rep("uptri", 17)
+  )
+
+
+setSweave("Piper Winter", 7, 7)
+
+AA.pl2 <- with(
+  PD.winter, 
+  piperPlot(
+    Ca.meq, 
+    Mg.meq, 
+    (Na.meq+K.meq),
+    Cl.meq, 
+    HCO3.meq, 
+    SO4.meq,
+  Plot = list(
+    name = River,
+    what = "points",
+    color = setColor(River),
+    symbol = sym
+        ),
+  zCat.title = "Sodium + Potasium",
+  xAn.title = "Chloride",
+  yAn.title = "Bicarbonate")
+  )
+
+addExplanation(AA.pl2, where="ul", title="Piper Diagram Winter Data", box.off = FALSE)
+
+graphics.off()
+
+```
+![](C:/Users/Camilo/Documents/Principal/Gibhub/Patagonia Analysis/Hydrochemical-analysis-of-Patagonian-Rivers/Piper Winter.png)
+
+# **Major Ion Composition** #
+
+```{r Cation.composition, echo = FALSE, fig.width=12, fig.height=8}
+
+varam.mean <- readRDS("varam.mean.rds")
+
+River <- c(
+  rep("Colorado", 15),
+  rep("Negro", 18),
+  rep("Chubut", 17)
+)
+
+varam.mean$Site <- c(
+  rep(1:15),
+  rep(1:18),
+  rep(1:17)
+)
+
+varam.mean <- cbind(River, varam.mean)
+
+cations <- varam.mean[, c(1, 2, 14, 11, 16)]
+
+ggplot(
+  data = cations, 
+  aes(x = factor(Site), y = Na, size = Na, col = River, group = River) 
+      ) +
+  geom_point(
+    alpha = 0.5, 
+    shape = 16,
+    ) +
+  geom_point(
+    aes(y = Ca, size = Ca, col = River), 
+    alpha = 0.5, 
+    shape = 16
+    ) +
+  geom_point(
+    aes(y = Mg, size = Mg, col = River), 
+    alpha = 0.5, 
+    shape = 16
+    ) +
+  geom_line(
+    aes(y = Na, color = River), 
+    size = 0.6
+    ) +
+  geom_line(
+    aes(y = Ca, color = River), 
+    linetype = "longdash", 
+    size = 0.6,
+    ) +
+  geom_line(
+    aes(y = Mg, color = River), 
+    linetype = "dotted", 
+    size = 0.6,
+    ) +
+    scale_color_manual(
+    values = c("blue", "red", "black")
+    ) +
+  scale_x_discrete(
+    limits= factor(18:1)
+    ) +
+  labs(
+    title = "Average summer-winter of cations (Na, Ca and Mg)",
+    x = "Sampling sites",
+    y = "Concentration (mg/L)"
+    ) +
+  theme_elegante()
+```
+
+```{r Anion.composition, echo = FALSE, fig.width=12, fig.height=8}
+
+anions <- varam.mean[, c(1, 2, 9, 10)]
+
+ggplot(
+  data = anions, 
+  aes(x = factor(Site), y = Cl, size = Cl, col = River, group = River) 
+      ) +
+  geom_point(
+    alpha = 0.5, 
+    shape = 16,
+    ) +
+  geom_point(
+    aes(y = SO4, size = SO4, col = River), 
+    alpha = 0.5, 
+    shape = 16
+    ) +
+  geom_line(
+    aes(y = Cl, color = River), 
+    size = 0.6
+    ) +
+  geom_line(
+    aes(y = SO4, color = River), 
+    linetype = "longdash", 
+    size = 0.6,
+    ) +
+  scale_color_manual(
+    values = c("blue", "red", "black")
+    ) +
+  scale_x_discrete(
+    limits= factor(18:1)
+    ) +
+  labs(
+    title = "Average summer-winter of anions (Cl and SO4)",
+    x = "Sampling sites",
+    y = "Concentration (mg/L)"
+    ) +
+  theme_elegante()
+```
 
 
 
