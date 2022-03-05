@@ -2010,6 +2010,8 @@ graphics.off()
 
 # **Major Ion Composition** #
 
+Evolution of ionic content across the rivers at the inland toward the Ocean (point 1)
+
 ```{r Cation.composition, echo = FALSE, fig.width=12, fig.height=8}
 
 varam.mean <- readRDS("varam.mean.rds")
@@ -2115,6 +2117,219 @@ ggplot(
     ) +
   theme_elegante()
 ```
+
+# **Major Ionic Ratios** #
+
+```{r Na.Cl, echo = FALSE}
+
+p19 <- ggplot(
+  data = PD.summer, 
+  aes(x = Na.meq, y = Cl.meq)
+  ) +
+  geom_point(
+    aes(col = River, shape = River, fill = River),
+    size = 2, 
+    show.legend = F
+    ) +
+  geom_point(
+    data = PD.winter, 
+    aes(x = Na.meq, y = Cl.meq, col = River, shape = River), 
+    size = 2, 
+    show.legend = F
+    ) +
+  scale_shape_manual(
+    values = c(21, 22, 24)
+    ) +
+  scale_color_manual(
+    values = c("darkcyan", "red", "black")
+    ) +
+  scale_fill_manual(
+    values = c("darkcyan", "red", "black")
+    ) +
+  geom_abline(
+    aes(intercept = 0, slope =1)
+    ) +
+  geom_text(
+    aes(label=ifelse(Cl.meq>100,
+                     as.character(Site),'')),
+    hjust = 0,
+    vjust = 0,
+    check_overlap = T
+    ) +
+  geom_text(
+    data = PD.winter,
+    aes(label=ifelse(Cl.meq>100,
+                     as.character(Site),'')),
+    hjust = 0,
+    vjust = 0,
+    check_overlap = T
+    ) +
+  labs(
+    y = "Cl (meq/L)", 
+    x = "Na (meq/L)"
+    ) +
+  theme_minimal()
+
+```
+
+```{r HCO3SO4.Ca+Mg, echo = FALSE}
+
+PD.summer$A <- PD.summer$HCO3.meq + PD.summer$SO4.meq #HCO3+SO4 summer
+PD.winter$A <- PD.winter$HCO3.meq + PD.winter$SO4.meq #HCO3+SO4 winter
+
+PD.summer$B <- PD.summer$Ca.meq + PD.summer$Mg.meq #Ca + Mg summer
+PD.winter$B <- PD.winter$Ca.meq + PD.winter$Mg.meq #Ca + Mg summer
+
+p20 <- ggplot(
+  data = PD.summer, 
+  aes(x = B, y = A)
+  ) +
+  geom_point(
+    aes(col = River, shape = River, fill = River),
+    size = 2, 
+    show.legend = F
+    ) +
+  geom_point(
+    data = PD.winter, 
+    aes(x = B, y = A, col = River, shape = River), 
+    size = 2, 
+    show.legend = F
+    ) +
+  scale_shape_manual(
+    values = c(21, 22, 24)
+    ) +
+  scale_color_manual(
+    values = c("darkcyan", "red", "black")
+    ) +
+  scale_fill_manual(
+    values = c("darkcyan", "red", "black")
+    ) +
+  geom_abline(
+    aes(intercept = 0, slope =1)
+    ) +
+  geom_text(
+    aes(label=ifelse(B > 30,
+                     as.character(Site),'')),
+    hjust = 0,
+    vjust = 0,
+    check_overlap = T
+    ) +
+  geom_text(
+    data = PD.winter,
+    aes(label=ifelse(A > 35,
+                     as.character(Site),'')),
+    hjust = 0,
+    vjust = 0,
+    check_overlap = T
+    ) +
+  xlim(0, 50) +
+  labs(
+    y = "HCO3+SO4 (meq/L)", 
+    x = "Ca+Mg (meq/lL)"
+    ) +
+  theme_minimal()
+
+```
+
+```{r Ca.Mg, echo = FALSE}
+
+p21 <- ggplot(
+  data = PD.summer, 
+  aes(x = Ca.meq, y = SO4.meq)
+  ) +
+  geom_point(
+    aes(col = River, shape = River, fill = River),
+    size = 2, 
+    show.legend = F
+    ) +
+  geom_point(
+    data = PD.winter, 
+    aes(x = Ca.meq, y = SO4.meq, col = River, shape = River), 
+    size = 2, 
+    show.legend = F
+    ) +
+  scale_shape_manual(
+    values = c(21, 22, 24)
+    ) +
+  scale_color_manual(
+    values = c("darkcyan", "red", "black")
+    ) +
+  scale_fill_manual(
+    values = c("darkcyan", "red", "black")
+    ) +
+  geom_abline(
+    aes(intercept = 0, slope =1)
+    ) +
+  geom_text(
+    aes(label=ifelse(SO4.meq > 15,
+                     as.character(Site),'')),
+    hjust = 0,
+    vjust = 0,
+    check_overlap = T
+    ) +
+  geom_text(
+    data = PD.winter,
+    aes(label=ifelse(SO4.meq > 15,
+                     as.character(Site),'')),
+    hjust = 0,
+    vjust = 0,
+    check_overlap = T
+    ) +
+  labs(
+    y = "SO4 (meq/L)", 
+    x = "Ca (meq/lL)"
+    ) +
+  theme_minimal()
+
+```
+
+```{r HCO3.Ca+Mg, echo = FALSE}
+
+p22 <- ggplot(
+  data = PD.summer, 
+  aes(x = B, y = HCO3.meq)
+  ) +
+  geom_point(
+    aes(col = River, shape = River, fill = River),
+    size = 2, 
+    show.legend = F
+    ) +
+  geom_point(
+    data = PD.winter, 
+    aes(x = B, y = HCO3.meq, col = River, shape = River), 
+    size = 2, 
+    show.legend = F
+    ) +
+  scale_shape_manual(
+    values = c(21, 22, 24)
+    ) +
+  scale_color_manual(
+    values = c("darkcyan", "red", "black")
+    ) +
+  scale_fill_manual(
+    values = c("darkcyan", "red", "black")
+    ) +
+  geom_abline(
+    aes(intercept = 0, slope =1)
+    ) +
+  xlim (0,12) + ylim (0,8) +
+  labs(
+    y = "HCO3 (meq/L)", 
+    x = "Ca + Mg (meq/lL)"
+    ) +
+  theme_minimal()
+
+```
+
+
+
+
+
+
+
+
+
+
 
 
 
