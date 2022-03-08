@@ -2321,6 +2321,10 @@ p22 <- ggplot(
 
 ```
 
+```{r Ionic.ratios, echo = FALSE, fig.width=12, fig.height=8}
+
+grid.arrange(p19, p20, p21, p22, nrow = 2, ncol = 2)
+```
 
 
 
